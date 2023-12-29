@@ -18,7 +18,7 @@ jobs:
         run: npm install --legacy-peer-deps
 
       - name: Run Lambdatest Cypress
-        run: lambdatest-cypress run
+        run: npx lambdatest-cypress run
 
       - name: Start Tunnel
         uses: LambdaTest/LambdaTest-tunnel-action@v2
