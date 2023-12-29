@@ -4,18 +4,32 @@ on: push
 
 jobs:
   test-tunnel:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
-      - name: Start Tunnel
-        uses: LambdaTest/LambdaTest-tunnel-action@v2
-        id: tunnel
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
         with:
-          user: ${{ secrets.LT_USERNAME }}
-          accessKey: ${{ secrets.LT_ACCESS_KEY }}
-          tunnelName: "testTunnel"
-      - run: npm test
-      - name: Export Tunnel Logs for debugging
-        uses: actions/upload-artifact@v2
-        with:
-          name: tunnel_logs
-          path: ${{ steps.tunnel.outputs.logFileName }}
+          node-version: '16.13.0'
+
+      - name: Install Dependencies
+        run: npm install --legacy-peer-deps
+
+      - name: Update LambdaTest Node Tunnel
+        run: npm update @lambdatest/node-tunnel
+
+      - name: Create LambdaTest Directories
+        run: mkdir -p .lambdatest/v3
+
+      - name: Run Cypress Tests with LambdaTest
+        run: |
+          # Run Cypress tests
+          output=$(npx lambdatest-cypress run)
+          echo "$output"
+          # Check for failures in the output
+          if echo "$output" | grep -q "failed"; then
+          echo "Tests failed"
+          exit 1
+          fi
