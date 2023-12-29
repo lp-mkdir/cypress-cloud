@@ -4,8 +4,14 @@ on: push
 
 jobs:
   test-tunnel:
-    runs-on: ubuntu-18.04
+    runs-on: ubuntu-latest
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install Dependencies
+        run: npm install
+
       - name: Start Tunnel
         uses: LambdaTest/LambdaTest-tunnel-action@v2
         id: tunnel
@@ -13,9 +19,13 @@ jobs:
           user: ${{ secrets.LT_USERNAME }}
           accessKey: ${{ secrets.LT_ACCESS_KEY }}
           tunnelName: "testTunnel"
-      - run: npm test
+
+      - name: Run Tests
+        run: npm test
+
       - name: Export Tunnel Logs for debugging
         uses: actions/upload-artifact@v2
         with:
           name: tunnel_logs
           path: ${{ steps.tunnel.outputs.logFileName }}
+
