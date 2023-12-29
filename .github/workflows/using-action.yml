@@ -24,4 +24,9 @@ jobs:
         run: mkdir -p .lambdatest/v3
 
       - name: Run Cypress Tests with LambdaTest
-        run: npx lambdatest-cypress run
+        run: |
+          npx lambdatest-cypress run
+          if [ $? -ne 0 ]; then
+            echo "Tests failed"
+            exit 1
+          fi
