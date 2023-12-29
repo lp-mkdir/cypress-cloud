@@ -17,19 +17,11 @@ jobs:
       - name: Install Dependencies
         run: npm install --legacy-peer-deps
 
-      - name: Run Lambdatest Cypress
+      - name: Update LambdaTest Node Tunnel
+        run: npm update @lambdatest/node-tunnel
+
+      - name: Create LambdaTest Directories
+        run: mkdir -p .lambdatest/v3
+
+      - name: Run Cypress Tests with LambdaTest
         run: npx lambdatest-cypress run
-
-      - name: Start Tunnel
-        uses: LambdaTest/LambdaTest-tunnel-action@v2
-        id: tunnel
-        with:
-          user: ${{ secrets.LT_USERNAME }}
-          accessKey: ${{ secrets.LT_ACCESS_KEY }}
-          tunnelName: "testTunnel"
-
-      - name: Export Tunnel Logs for debugging
-        uses: actions/upload-artifact@v2
-        with:
-          name: tunnel_logs
-          path: ${{ steps.tunnel.outputs.logFileName }}
