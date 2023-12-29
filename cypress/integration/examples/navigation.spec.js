@@ -11,7 +11,7 @@ context('Navigation', () => {
   it('cy.go() - go back or forward in the browser\'s history', () => {
     // https://on.cypress.io/go
 
-    cy.location('pathname').should('include', 'breakit')
+    cy.location('pathname').should('include', 'navigation')
 
     cy.go('back')
     cy.location('pathname').should('not.include', 'navigation')
